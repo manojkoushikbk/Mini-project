@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1><i class="fas fa-calculator"></i> Create New Bill</h1>
+        <div class="dashboard-nav">
+            <a href="{{ url_for('dashboard') }}" class="btn">
+                <i class="fas fa-chart-bar"></i> Dashboard
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="customer-details">
+            <h2><i class="fas fa-user"></i> Customer Details</h2>
+            <input type="text" id="customer_name" placeholder="Customer Name" required>
+            <input type="text" id="phone" placeholder="Phone Number" required>
+            <input type="text" id="bill_no" value="{{ bill_no }}" readonly>
+        </div>
+
+        <div class="items">
+            <h2><i class="fas fa-shopping-basket"></i> Items</h2>
+            <div id="item_list">
+                <!-- Grocery Section -->
+                <div class="category-section">
+                    <h3><i class="fas fa-shopping-cart"></i> Grocery</h3>
+                    {% for item in items if item.category == 'grocery' %}
+                    <div class="item">
+                        <span>{{ item.name }} (₹{{ "%.2f"|format(item.price) }})</span>
+                        <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Snacks Section -->
+                <div class="category-section">
+                    <h3><i class="fas fa-cookie-bite"></i> Snacks</h3>
+                    {% for item in items if item.category == 'snacks' %}
+                    <div class="item">
+                        <span>{{ item.name }} (₹{{ "%.2f"|format(item.price) }})</span>
+                        <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Hygiene Section -->
+                <div class="category-section">
+                    <h3><i class="fas fa-pump-soap"></i> Beauty & Hygiene</h3>
+                    {% for item in items if item.category == 'hygiene' %}
+                    <div class="item">
+                        <span>{{ item.name }} (₹{{ "%.2f"|format(item.price) }})</span>
+                        <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="bill-area">
+            <h2><i class="fas fa-file-invoice"></i> Bill Preview</h2>
+            <textarea id="bill_text" readonly></textarea>
+            <button onclick="calculateBill()">
+                <i class="fas fa-calculator"></i> Calculate Bill
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

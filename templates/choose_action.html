@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Action - Digital Billing System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="home-container">
+        <header class="hero-section">
+            <h1><i class="fas fa-store"></i> Welcome Back!</h1>
+            <p class="tagline">Hello {{ username }}, what would you like to do today?</p>
+        </header>
+
+        <div class="features-grid">
+            <a href="{{ url_for('billing') }}" class="feature-card">
+                <i class="fas fa-calculator"></i>
+                <h3>Create New Bill</h3>
+                <p>Generate bills for customers</p>
+                <ul class="feature-list">
+                    <li>45+ items available</li>
+                    <li>Automatic tax calculation</li>
+                    <li>Print-ready format</li>
+                </ul>
+            </a>
+            
+            <a href="{{ url_for('dashboard') }}" class="feature-card">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Dashboard</h3>
+                <p>View sales and manage inventory</p>
+                <ul class="feature-list">
+                    <li>View recent transactions</li>
+                    <li>Check total sales</li>
+                    <li>Manage inventory</li>
+                </ul>
+            </a>
+        </div>
+
+        <div class="quick-stats">
+            <div class="stat-card">
+                <i class="fas fa-box"></i>
+                <h4>Available Items</h4>
+                <p>45+ Products</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-tags"></i>
+                <h4>Categories</h4>
+                <p>Grocery, Snacks, Hygiene</p>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Billing System - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="home-container">
+        <header class="hero-section">
+            <h1><i class="fas fa-store"></i> Digital Billing System</h1>
+            <p class="tagline">Modern Solution for Smart Business Management</p>
+        </header>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>Fast Billing</h3>
+                <p>Process transactions quickly with our intuitive interface</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Sales Analytics</h3>
+                <p>Track your business growth with detailed reports</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-box"></i>
+                <h3>Inventory Management</h3>
+                <p>Manage your stock efficiently</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-receipt"></i>
+                <h3>Digital Receipts</h3>
+                <p>Environment-friendly paperless billing option</p>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready to Start?</h2>
+            <div class="cta-buttons">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login to Continue
+                </a>
+            </div>
+        </div>
+
+        <footer class="home-footer">
+            <p>© 2025 Amith Creations Billing System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+</body>
+</html> 

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Digital Billing System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="loading"></div>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
+            <div class="dashboard-nav">
+                <a href="{{ url_for('billing') }}" class="btn btn-primary">
+                    <i class="fas fa-calculator"></i> New Bill
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-rupee-sign"></i>
+                <h4>Total Revenue</h4>
+                <p>₹{{ "%.2f"|format(total_sales) }}</p>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i> 12.5%
+                </div>
+            </div>
+            {% for stat in category_stats %}
+            <div class="stat-card">
+                <i class="fas fa-box"></i>
+                <h4>{{ stat.category|title }} Items</h4>
+                <p>{{ stat.count }}</p>
+                <div class="stat-details">Total Value: ₹{{ "%.2f"|format(stat.total) }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="dashboard-section">
+            <h2><i class="fas fa-history"></i> Recent Transactions</h2>
+            <div class="table-container">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> Bill No</th>
+                            <th><i class="fas fa-user"></i> Customer</th>
+                            <th><i class="fas fa-phone"></i> Phone</th>
+                            <th><i class="fas fa-rupee-sign"></i> Amount</th>
+                            <th><i class="fas fa-calendar"></i> Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td><span class="badge">{{ transaction.bill_no }}</span></td>
+                            <td>{{ transaction.customer_name }}</td>
+                            <td>{{ transaction.phone }}</td>
+                            <td class="amount">₹{{ "%.2f"|format(transaction.total_amount) }}</td>
+                            <td>{{ transaction.purchase_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Inventory Management -->
+        <div class="dashboard-section">
+            <h2><i class="fas fa-boxes"></i> Inventory Management</h2>
+            
+            <!-- Add New Item Form -->
+            <div class="add-item-form">
+                <h3><i class="fas fa-plus-circle"></i> Add New Item</h3>
+                <form action="{{ url_for('add_item') }}" method="POST" class="modern-form">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select name="category" id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="grocery">Grocery</option>
+                            <option value="snacks">Snacks</option>
+                            <option value="hygiene">Hygiene</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Item Name</label>
+                        <input type="text" name="name" id="name" placeholder="Enter item name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price (₹)</label>
+                        <input type="number" name="price" id="price" placeholder="Enter price" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </form>
+            </div>
+
+            <!-- Current Inventory -->
+            <div class="inventory-list">
+                <h3><i class="fas fa-list"></i> Current Inventory</h3>
+                <div class="table-container">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-tag"></i> Category</th>
+                                <th><i class="fas fa-box"></i> Name</th>
+                                <th><i class="fas fa-rupee-sign"></i> Price</th>
+                                <th><i class="fas fa-cog"></i> Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <span class="category-badge {{ item.category }}">
+                                        {{ item.category|title }}
+                                    </span>
+                                </td>
+                                <td>{{ item.name }}</td>
+                                <td class="amount">₹{{ "%.2f"|format(item.price) }}</td>
+                                <td>
+                                    <a href="{{ url_for('delete_item', item_id=item.id) }}" 
+                                       class="btn btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this item?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        // Remove flash messages after 5 seconds
+        setTimeout(() => {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                flashMessages.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }
+        }, 5000);
+
+        // Remove loading bar after page load
+        window.addEventListener('load', () => {
+            const loading = document.querySelector('.loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.remove(), 300);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Billing System</h1>
+    <div class="container">
+        <div class="customer-details">
+            <h2>Customer Details</h2>
+            <input type="text" id="customer_name" placeholder="Customer Name">
+            <input type="text" id="phone" placeholder="Phone No.">
+            <input type="text" id="bill_no" value="{{ bill_no }}" readonly>
+        </div>
+        <div class="items">
+            <h2>Items</h2>
+            <div id="item_list">
+                <!-- Snacks Section -->
+                <h3>Snacks</h3>
+                {% for item in items if item.category == 'snacks' %}
+                <div class="item">
+                    <span>{{ item.name }} ({{ item.price }} Rs)</span>
+                    <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                </div>
+                {% endfor %}
+
+                <!-- Grocery Section -->
+                <h3>Grocery</h3>
+                {% for item in items if item.category == 'grocery' %}
+                <div class="item">
+                    <span>{{ item.name }} ({{ item.price }} Rs)</span>
+                    <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                </div>
+                {% endfor %}
+
+                <!-- Hygiene Section -->
+                <h3>Beauty & Hygiene</h3>
+                {% for item in items if item.category == 'hygiene' %}
+                <div class="item">
+                    <span>{{ item.name }} ({{ item.price }} Rs)</span>
+                    <input type="number" min="0" data-id="{{ item.id }}" value="0">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="bill-area">
+            <h2>Bill Area</h2>
+            <textarea id="bill_text" readonly></textarea>
+            <button onclick="calculateBill()">Calculate Bill</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
